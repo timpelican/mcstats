@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+
+{% block content %}
+    {% for hero in heroes %}
+    <div><p><em>{{ hero.name }}</em> is in {{ hero.aspect }}</p></div>
+    {% endfor %}
+{% endblock %}
