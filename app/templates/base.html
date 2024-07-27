@@ -6,10 +6,10 @@
     <body>
         <div>
             <h1>Welcome to Marvel Champions Stats</h1>
-            <a href={{ url_for('index') }}>Home</a>
-            <a href={{ url_for('login') }}>Login</a>
-            <a href={{ url_for('villain') }}>Villain</a>
-            <a href={{ url_for('hero') }}>Hero</a>
+            <a href="{{ url_for('index') }}">Home</a>
+            <a href="{{ url_for('login') }}">Login</a>
+            <a href="{{ url_for('villain') }}">Villain</a>
+            <a href="{{ url_for('hero') }}">Hero</a>
         </div>
         <hr>
         {% with messages = get_flashed_messages() %}
