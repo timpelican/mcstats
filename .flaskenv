@@ -1,1 +1,2 @@
 FLASK_APP=mcstats.py
+FLASK_DEBUG=1
