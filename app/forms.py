@@ -10,16 +10,12 @@ class LoginForm(FlaskForm):
 
 class VillainForm(FlaskForm):
     name = StringField('Villain Name', validators=[DataRequired()])
-    phase = RadioField('Phase', validators=[DataRequired()], \
-                          choices=[("1","Phase I - Core"), \
-                                   ("2","Phase II - The Rise of Red Skull")])
+    phase = RadioField('Phase', validators=[DataRequired()], coerce=int)
     submit = SubmitField('Submit')
 
 class HeroForm(FlaskForm):
     name = StringField('Hero Name', validators=[DataRequired()])
-    phase = RadioField('Phase', validators=[DataRequired()], \
-                          choices=[("1","Phase I - Core"), \
-                                    ("2","Phase II - The Rise of Red Skull")])
+    phase = RadioField('Phase', validators=[DataRequired()], coerce=int)
     aspect = SelectField('Default Aspect', validators=[DataRequired()], \
                          choices=[("1","Aggression"), \
                                     ("2","Leadership"), \

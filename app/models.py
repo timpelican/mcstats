@@ -13,3 +13,11 @@ class User(db.Model):
 
     def __repr__(self):
         return '<User {}>'.format(self.username)
+    
+class Phase(db.Model):
+    id: so.Mapped[int] = so.mapped_column(primary_key=True)
+    phasename: so.Mapped[str] = so.mapped_column(sa.String(64), index=True,
+                                                unique=True)
+
+    def __repr__(self):
+        return '<Phase {}>'.format(self.phasename)
