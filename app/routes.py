@@ -6,6 +6,7 @@ from app.models import Phase
 @app.route('/')
 @app.route('/index')
 def index():
+    phases = Phase.query.order_by('id').all()
     heroes = [
         {
             'name': 'Captain America',
@@ -16,7 +17,7 @@ def index():
             'aspect': 'Aggression'
         }
     ]
-    return render_template('index.html', heroes=heroes)
+    return render_template('index.html', phases=phases)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():

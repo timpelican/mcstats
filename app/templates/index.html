@@ -1,7 +1,15 @@
 {% extends "base.html" %}
 
 {% block content %}
-    {% for hero in heroes %}
-    <div><p><em>{{ hero.name }}</em> is in {{ hero.aspect }}</p></div>
+    {% for phase in phases %}
+    <div>
+        <h2>{{ phase.phasename }}</h2>
+        <p>
+            <em>Villains: </em>
+            {% for v in phase.villains %}
+                {{ v.name }}
+            {% endfor %}
+        </p>
+    </div>
     {% endfor %}
 {% endblock %}
