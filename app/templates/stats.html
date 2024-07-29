@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <style>
+    table, th, td {
+      border: 1px solid black;
+    }
+    table.center {
+      margin-left: auto;
+      margin-right: auto;
+    }
+    </style>
+    <h1>Statistics</h1>
+    {% for phase in phases %}
+    <div>
+        <h2>{{ phase.phasename }}</h2>
+        {% if phase.villains %}
+            {% if phase.heroes %}
+                <table>
+                    <tr>
+                        <td></td><td></td>
+                        {% for v in phase.villains %}
+                            <td>{{ v.name }}</td>
+                        {% endfor %}
+                    </tr>
+                    {% for h in phase.heroes %}
+                        <tr>
+                            <td>{{ h.name }}</td>
+                            <td>{{ h.default_aspect.name }}</td>
+                            {% for v2 in phase.villains %}
+                                <td></td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </table>
+            {% else %}
+                <p>No hereos found for this phase!</p>
+            {% endif %}
+        {% else %}
+            <p>No villains found for this phase!</p>
+        {% endif %}
+    </div>
+    {% endfor %}
+{% endblock %}

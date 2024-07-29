@@ -7,17 +7,12 @@ from app.models import Phase, Aspect
 @app.route('/index')
 def index():
     phases = Phase.query.order_by('id').all()
-    heroes = [
-        {
-            'name': 'Captain America',
-            'aspect': 'Leadership'
-        },
-        {
-            'name': 'Iron Man',
-            'aspect': 'Aggression'
-        }
-    ]
     return render_template('index.html', phases=phases)
+
+@app.route('/stats')
+def stats():
+    phases = Phase.query.order_by('id').all()
+    return render_template('stats.html', phases=phases)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
