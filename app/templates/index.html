@@ -10,6 +10,12 @@
                 {{ v.name }}
             {% endfor %}
         </p>
+        <p>
+            <em>Heroes: </em>
+            {% for h in phase.heroes %}
+                {{ h.name }}({{ h.default_aspect.name }})
+            {% endfor %}
+        </p>
     </div>
     {% endfor %}
 {% endblock %}

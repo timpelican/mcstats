@@ -1,7 +1,7 @@
 from flask import render_template, flash, redirect, url_for
 from app import app, db
 from app.forms import LoginForm, VillainForm, HeroForm
-from app.models import Phase
+from app.models import Phase, Aspect
 
 @app.route('/')
 @app.route('/index')
@@ -46,6 +46,8 @@ def hero():
     #TODO: Need an actual error when no Phases are defined.
     # Currently generates an unsubmittable form.
     form.phase.choices = [(p.id, p.phasename) for p in Phase.query.order_by('id')]
+    #TODO: Ditto for Aspects.
+    form.aspect.choices = [(a.id, a.name) for a in Aspect.query.order_by('id')]
     if form.validate_on_submit():
         flash('New hero {}, from phase {} with default aspect {}'.format(
             form.name.data, form.phase.data, form.aspect.data))
