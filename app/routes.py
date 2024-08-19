@@ -68,3 +68,10 @@ def hero():
             form.name.data, form.phase.data, form.aspect.data))
         return redirect(url_for('index'))
     return render_template('hero.html', title='Hero', form=form)
+
+@app.route('/forcederror', methods=['GET'])
+def forcederror():
+    a = Aspect()
+    db.session.add(a)
+    db.session.commit()
+    return redirect(url_for('index'))
