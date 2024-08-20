@@ -3,7 +3,7 @@ from flask_login import current_user, login_user, logout_user, login_required
 import sqlalchemy as sa
 from app import app, db
 from app.forms import LoginForm, VillainForm, HeroForm
-from app.models import Phase, Aspect, User
+from app.models import Phase, Aspect, User, Result
 from urllib.parse import urlsplit
 
 
@@ -16,7 +16,9 @@ def index():
 @app.route('/stats')
 def stats():
     phases = Phase.query.order_by('id').all()
-    return render_template('stats.html', phases=phases)
+    #TODO: this could get inefficient with lots of results
+    results = Result.query.order_by('id').all()
+    return render_template('stats.html', phases=phases, results=results)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():

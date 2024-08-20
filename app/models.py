@@ -4,6 +4,7 @@ import sqlalchemy.orm as so
 from app import db, login
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
+import enum
 
 @login.user_loader
 def load_user(id):
@@ -71,3 +72,42 @@ class Hero(db.Model):
 
     def __repr__(self):
         return '<Hero {}>'.format(self.name)
+
+    def result_vs_villain(self, villain):
+        return db.session.execute(sa.select(Result).where(Result.hero_id == self.id).
+                                  where(Result.villain_id == villain.id)).scalar()
+    
+    def result_as_cell(self, villain):
+        r = self.result_vs_villain(villain)
+        if r is None:
+            return "<td></td>"
+        else:
+            return r.as_cell()
+        
+class ResultTypes(enum.Enum):
+    win = 1
+    loss = 2
+
+class Result(db.Model):
+    id: so.Mapped[int] = so.mapped_column(primary_key=True)
+    hero_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey(Hero.id),
+                                               index=True)
+    villain_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey(Villain.id),
+                                               index=True)
+    result: so.Mapped[ResultTypes]
+    hero: so.Mapped[Hero] = so.relationship()
+    villain: so.Mapped[Villain] = so.relationship()
+
+    def __repr__(self):
+        return '<Result {} vs {}: {}>'.format(self.hero.name, self.villain.name, self.result)
+
+    def as_cell(self):
+        #TODO: this should return some kind of CSS selector
+        match self.result:
+            case ResultTypes.win:
+                return '<td bgcolor="#00ff00">W</td>'
+            case ResultTypes.loss:
+                return '<td bgcolor="#ff0000">L</td>'
+            case _:
+                return '<td></td>'
+            
