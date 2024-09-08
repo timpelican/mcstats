@@ -1,19 +1,81 @@
+"""
+Fixtures for tests
+"""
 import os
 os.environ['DATABASE_URL'] = 'sqlite://'
-from app import app, db
 import pytest
+import sqlalchemy as sa
+from flask_login import login_user, logout_user
+from app import app, db
+from app.models import User
 
-@pytest.fixture(scope='module')
-def test_client():
-    # Set the Testing configuration prior to creating the Flask application
-    # This doesn't quite work right when not using a factory - update later
-    # Currently has the in-memory DB set up the top
+class AuthActions():
+    """
+    Helpers for testing authenticated user without using the /login route
+    Testers don't need to know a valid user name and password, it's all self-contained
+    """
+    def __init__(self, client, username='TestUser', password='TestPass', email='test@example.com'):
+        """
+        Create the helper
+        """
+        self.client = client
+        self.username = username
+        self.password = password
+        self.email = email
+
+    def create(self):
+        """
+        Create the user in the DB
+        """
+        with self.client.application.app_context():
+            test_user = User(username=self.username, email=self.email)
+            test_user.set_password(self.password)
+            db.session.add(test_user)
+            db.session.commit()
+
+    def login(self):
+        """
+        Login with the created user
+        """
+        with self.client.application.app_context():
+            user = db.session.scalar(
+                sa.select(User).where(User.username == self.username))
+            return login_user(user)
+
+    def logout(self):
+        """
+        Logout the user
+        """
+        return logout_user()
+
+@pytest.fixture()
+def test_app():
+    """
+    App fixture - overrides to in-memory DB and creates all tables
+    """
+    app.config.update({
+        'TESTING': True,
+        'SQLALCHEMY_DATABASE_URI': 'sqlite://'
+    })
     app_context = app.app_context()
     app_context.push()
     db.create_all()
+    yield app
 
-    # Create a test client using the Flask application configured for testing
-    with app.test_client() as testing_client:
-        # Establish an application context
-        with app.app_context():
-            yield testing_client  # this is where the testing happens!
+    # Clean up the DB afterwards
+    db.drop_all()
+    app_context.pop()
+
+@pytest.fixture()
+def test_client(test_app):
+    """
+    Client fixture
+    """
+    return test_app.test_client()
+
+@pytest.fixture
+def test_auth(test_client):
+    """
+    Authenticated client fixture
+    """
+    return AuthActions(test_client)
