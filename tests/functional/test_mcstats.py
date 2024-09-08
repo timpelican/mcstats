@@ -83,3 +83,33 @@ def test_login_user(test_client, test_auth):
         response = test_client.get('/login')
         assert response.status_code == 302
         assert response.headers['Location'] == url_for('index')
+
+def test_login_form_pass(test_client, test_auth):
+    """
+    GIVEN no user session
+    WHEN the client tries to login (POST) with the correct credentials
+    THEN the session is logged in
+    """
+    with test_client.application.test_request_context():
+        test_auth.create()
+        # test_auth.login()
+        assert current_user.is_authenticated is False
+        response = test_client.post('/login', data={'username': test_auth.username, 'password': test_auth.password})
+        assert current_user.is_authenticated is True
+        assert response.status_code == 302
+        assert response.headers['Location'] == url_for('index')
+
+def test_login_form_fail(test_client, test_auth):
+    """
+    GIVEN no user session
+    WHEN the client tries to login (POST) with the incorrect credentials
+    THEN the session is not logged in, and requested to login again
+    """
+    with test_client.application.test_request_context():
+        test_auth.create()
+        # test_auth.login()
+        assert current_user.is_authenticated is False
+        response = test_client.post('/login', data={'username': test_auth.username, 'password': 'BADPASSWORD'})
+        assert current_user.is_authenticated is False
+        assert response.status_code == 302
+        assert response.headers['Location'] == url_for('login')

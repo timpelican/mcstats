@@ -56,7 +56,7 @@ def villain_create():
         db.session.commit()
         flash('New villain {}, from phase {}, created'.format(
             form.name.data, form.phase.data))
-        return redirect(url_for('index'))
+        return redirect(url_for('villain'))
     return render_template('villain.html', form=form)
 
 @app.route('/villain')

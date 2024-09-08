@@ -7,7 +7,7 @@ import pytest
 import sqlalchemy as sa
 from flask_login import login_user, logout_user
 from app import app, db
-from app.models import User
+from app.models import User, Phase
 
 class AuthActions():
     """
@@ -55,7 +55,8 @@ def test_app():
     """
     app.config.update({
         'TESTING': True,
-        'SQLALCHEMY_DATABASE_URI': 'sqlite://'
+        'SQLALCHEMY_DATABASE_URI': 'sqlite://',
+        'WTF_CSRF_ENABLED': False,
     })
     app_context = app.app_context()
     app_context.push()
@@ -79,3 +80,13 @@ def test_auth(test_client):
     Authenticated client fixture
     """
     return AuthActions(test_client)
+
+@pytest.fixture
+def test_phase(test_app):
+    """
+    Dummy Phase to allow for Villains
+    """
+    with test_app.app_context():
+        p = Phase(id=1, phasename='Test Phase 1')
+        db.session.add(p)
+        db.session.commit()
