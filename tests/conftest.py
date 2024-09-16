@@ -7,7 +7,7 @@ import pytest
 import sqlalchemy as sa
 from flask_login import login_user, logout_user
 from app import app, db
-from app.models import User, Phase
+from app.models import User, Phase, Villain
 
 class AuthActions():
     """
@@ -89,4 +89,14 @@ def test_phase(test_app):
     with test_app.app_context():
         p = Phase(id=1, phasename='Test Phase 1')
         db.session.add(p)
+        db.session.commit()
+
+@pytest.fixture
+def test_villain(test_app, test_phase):
+    """
+    Dummy Villain to allow for show / delete
+    """
+    with test_app.app_context():
+        v = Villain(id=1, phase_id=1, name='Big Bad Bob')
+        db.session.add(v)
         db.session.commit()
