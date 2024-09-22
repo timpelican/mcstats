@@ -13,6 +13,9 @@ class VillainForm(FlaskForm):
     phase = RadioField('Phase', validators=[DataRequired()], coerce=int)
     submit = SubmitField('Submit')
 
+class VillainDeleteForm(FlaskForm):
+    submit = SubmitField('Confirm')
+
 class HeroForm(FlaskForm):
     name = StringField('Hero Name', validators=[DataRequired()])
     phase = RadioField('Phase', validators=[DataRequired()], coerce=int)

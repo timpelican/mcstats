@@ -288,7 +288,7 @@ def test_villain_delete_post_auth_bad_id(test_client, test_auth, test_phase, tes
         test_auth.create()
         test_auth.login()
         assert current_user.is_authenticated is True
-        response = test_client.post('/villain/1/delete',
+        response = test_client.post('/villain/2/delete',
                                     data={'submit': 'submit'})
         assert response.status_code == 302
         assert url_for('index') in response.headers['Location']

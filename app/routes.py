@@ -2,7 +2,7 @@ from flask import render_template, flash, redirect, url_for, request
 from flask_login import current_user, login_user, logout_user, login_required
 import sqlalchemy as sa
 from app import app, db
-from app.forms import LoginForm, VillainForm, HeroForm
+from app.forms import LoginForm, VillainForm, VillainDeleteForm, HeroForm
 from app.models import Phase, Aspect, User, Result, Villain
 from urllib.parse import urlsplit
 
@@ -94,6 +94,25 @@ def villain_update(villain_id):
     flash(f'Villain with id {villain_id} does not exist!')
     return redirect(url_for('index'))
 
+@app.route('/villain/<int:villain_id>/delete', methods=['GET', 'POST'])
+@login_required
+def villain_delete(villain_id):
+    v = Villain.query.filter_by(id=villain_id).first()
+    if v:
+        pass
+        form = VillainDeleteForm()
+        # form.phase.choices = [(p.id, p.phasename) for p in Phase.query.order_by('id')]
+        if form.validate_on_submit():
+            db.session.delete(v)
+            db.session.commit()
+            flash(f'Deleted Villain {v.name}')
+            return redirect(url_for('villain'))
+        elif request.method == 'GET':
+            pass
+            # No fields to populate in the form
+        return render_template('villain_delete.html', title='Villain', form=form, villain=v)
+    flash(f'Villain with id {villain_id} does not exist!')
+    return redirect(url_for('index'))
 
 @app.route('/hero', methods=['GET', 'POST'])
 @login_required
