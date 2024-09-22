@@ -191,3 +191,106 @@ def test_villain_update_post_auth_bad_id(test_client, test_auth, test_phase, tes
         assert url_for('index') in response.headers['Location']
         with test_client.session_transaction() as session:
             assert session['_flashes'] is not None 
+
+def test_villain_delete_noauth(test_client):
+    """
+    GIVEN a Flask application configured for testing
+    WHEN the '/villain/<x>/delete' page is requested (GET)
+    THEN check user is redirected to login
+    """
+    with test_client.application.test_request_context():
+        response = test_client.get('/villain/1/delete')
+        assert response.status_code == 302
+        assert url_for('login') in response.headers['Location'] 
+
+def test_villain_delete_auth(test_client, test_auth, test_villain):
+    """
+    GIVEN a Flask application configured for testing
+        AND a logged-in user
+    WHEN the '/villain/<x>/delete' page is requested (GET)
+        for a valid Villain ID
+    THEN check the form is returned
+    """
+    with test_client.application.test_request_context():
+        test_auth.create()
+        test_auth.login()
+        assert current_user.is_authenticated is True
+        response = test_client.get('/villain/1/delete')
+        assert response.status_code == 200
+        assert b'Confirm' in response.data
+
+def test_villain_delete_auth_bad_id(test_client, test_auth, test_villain):
+    """
+    GIVEN a Flask application configured for testing
+        AND a logged-in user
+    WHEN the '/villain/<x>/delete' page is requested (GET)
+        for an invalid Villain ID
+    THEN check a redirect to the index is returned
+        AND a flash message is provided
+    """
+    with test_client.application.test_request_context():
+        test_auth.create()
+        test_auth.login()
+        assert current_user.is_authenticated is True
+        response = test_client.get('/villain/2/delete')
+        assert response.status_code == 302
+        assert url_for('index') in response.headers['Location']
+        with test_client.session_transaction() as session:
+            assert session['_flashes'] is not None
+
+def test_villain_delete_post_noauth(test_client, test_villain):
+    """
+    GIVEN a Flask application configured for testing
+    WHEN the '/villain/<x>/delete' page is requested (POST)
+    THEN check user is redirected to login
+    """
+    with test_client.application.test_request_context():
+        response = test_client.post('/villain/1/delete',
+                                    data={'submit': 'submit'})
+        assert response.status_code == 302
+        assert url_for('login') in response.headers['Location'] 
+
+def test_villain_delete_post_auth(test_client, test_auth, test_phase, test_villain):
+    """
+    GIVEN a Flask application configured for testing
+        AND a logged-in user
+    WHEN the '/villain/<x>/delete' page is requested (POST)
+        for an valid villain ID
+    THEN check the form is submitted and the villain updated
+    """
+    with test_client.application.test_request_context():
+        test_auth.create()
+        test_auth.login()
+        assert current_user.is_authenticated is True
+        response = test_client.post('/villain/1/delete',
+                                    data={'submit': 'submit'})
+        assert response.status_code == 302
+        assert url_for('villain') in response.headers['Location']
+
+        # Confirm that villain has been deleted
+
+        response = test_client.get('/villain/1')
+        assert response.status_code == 302
+        assert url_for('index') in response.headers['Location']
+        with test_client.session_transaction() as session:
+            assert session['_flashes'] is not None
+
+def test_villain_delete_post_auth_bad_id(test_client, test_auth, test_phase, test_villain):
+    """
+    GIVEN a Flask application configured for testing
+        AND a logged-in user
+    WHEN the '/villain/<x>/delete' page is requested (POST)
+        for an invalid villain ID
+    THEN check a redirect to the index is returned
+        AND a flash message is provided
+    """
+    with test_client.application.test_request_context():
+        test_auth.create()
+        test_auth.login()
+        assert current_user.is_authenticated is True
+        response = test_client.post('/villain/1/delete',
+                                    data={'submit': 'submit'})
+        assert response.status_code == 302
+        assert url_for('index') in response.headers['Location']
+        with test_client.session_transaction() as session:
+            assert session['_flashes'] is not None 
