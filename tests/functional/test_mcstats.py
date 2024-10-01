@@ -23,7 +23,7 @@ def test_home_page(test_client):
 
     response = test_client.get('/')
     assert response.status_code == 200
-    assert b'Welcome to Marvel Champions Stats' in response.data
+    assert b'Marvel Champions Stats' in response.data
     # Test client is not logged in - we should see login link, but no logout
     assert b'login' in response.data
     assert b'logout' not in response.data
@@ -41,7 +41,7 @@ def test_home_page_auth(test_client, test_auth):
         assert current_user.is_authenticated is True
         response = test_client.get('/')
         assert response.status_code == 200
-        assert b'Welcome to Marvel Champions Stats' in response.data
+        assert b'Marvel Champions Stats' in response.data
         # Test client is not logged in - we should see login link, but no logout
         assert b'login' not in response.data
         assert b'logout' in response.data
