@@ -1,10 +1,10 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>Villain</h1>
-    <ul>
-        <li>Name: {{ villain.name }}</li>
-        <li>Phase: {{ villain.phase.phasename }}</li>
-    </ul>
-    <a href={{ url_for('villain_update', villain_id=villain.id) }}><button>Edit</button></a>
+  <h1>Villain</h1>
+  <ul>
+    <li>Name: {{ villain.name }}</li>
+    <li>Phase: {{ villain.phase.phasename }}</li>
+  </ul>
+  <a href={{ url_for('villain_update', villain_id=villain.id) }}><button class="btn btn-primary mb-3" id="edit" name="edit" type="edit" value="Edit">Edit</button></a>
 {% endblock %}
