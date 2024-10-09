@@ -1,44 +1,68 @@
 {% extends "base.html" %}
 
+{% macro phase_stats(phase) %}
+<div>
+  <h2>{{ phase.phasename }}</h2>
+  {% if phase.villains %}
+    {% if phase.heroes %}
+    <table>
+      <tr>
+        <td></td><td></td>
+        {% for v in phase.villains %}
+        <td>{{ v.name }}</td>
+        {% endfor %}
+      </tr>
+      {% for h in phase.heroes %}
+      <tr>
+        <td>{{ h.name }}</td>
+        <td>{{ h.default_aspect.name }}</td>
+        {% for v2 in phase.villains %}
+            {{ h.result_as_cell(v2)|safe }}
+        {% endfor %}
+      </tr>
+      {% endfor %}
+    </table>
+    {% else %}
+    <p>No heroes found for this phase!</p>
+    {% endif %}
+  {% else %}
+  <p>No villains found for this phase!</p>
+  {% endif %}
+</div>
+{% endmacro %}
+
 {% block content %}
-    <style>
-    table, th, td {
-      border: 1px solid black;
-    }
-    table.center {
-      margin-left: auto;
-      margin-right: auto;
-    }
-    </style>
-    <h1>Statistics</h1>
-    {% for phase in phases %}
-    <div>
-        <h2>{{ phase.phasename }}</h2>
-        {% if phase.villains %}
-            {% if phase.heroes %}
-                <table>
-                    <tr>
-                        <td></td><td></td>
-                        {% for v in phase.villains %}
-                            <td>{{ v.name }}</td>
-                        {% endfor %}
-                    </tr>
-                    {% for h in phase.heroes %}
-                        <tr>
-                            <td>{{ h.name }}</td>
-                            <td>{{ h.default_aspect.name }}</td>
-                            {% for v2 in phase.villains %}
-                                {{ h.result_as_cell(v2)|safe }}
-                            {% endfor %}
-                        </tr>
-                    {% endfor %}
-                </table>
-            {% else %}
-                <p>No hereos found for this phase!</p>
-            {% endif %}
-        {% else %}
-            <p>No villains found for this phase!</p>
-        {% endif %}
-    </div>
+<style>
+  table, th, td {
+    border: 1px solid black;
+  }
+  table.center {
+    margin-left: auto;
+    margin-right: auto;
+  }
+</style>
+
+<h1>Statistics</h1>
+<nav>
+  <div class="nav nav-tabs" id="stats-tab" role="tablist">
+    {% for phase in phases[:1] %}
+    <button class="nav-link active" id="nav-phase{{ phase.id }}-tab" data-bs-toggle="tab" data-bs-target="#nav-phase{{ phase.id }}" type="button" role="tab" aria-controls="nav-phase{{ phase.id }}" aria-selected="true">{{ phase.phasename }}</button>
     {% endfor %}
+    {% for phase in phases[1:] %}
+    <button class="nav-link" id="nav-phase{{ phase.id }}-tab" data-bs-toggle="tab" data-bs-target="#nav-phase{{ phase.id }}" type="button" role="tab" aria-controls="nav-phase{{ phase.id }}" aria-selected="false">{{ phase.phasename }}</button>
+    {% endfor %}
+  </div>
+</nav>
+<div class="tab-content" id="stats-tabContent">
+  {% for phase in phases[:1] %}
+  <div class="tab-pane fade show active" id="nav-phase{{ phase.id }}" role="tabpanel" aria-labelledby="nav-phase{{ phase.id }}-tab" tabindex="0">
+    {{ phase_stats(phase) }}
+  </div>
+  {% endfor %}
+  {% for phase in phases[1:] %}
+  <div class="tab-pane fade" id="nav-phase{{ phase.id }}" role="tabpanel" aria-labelledby="nav-phase{{ phase.id }}-tab" tabindex="0">
+    {{ phase_stats(phase) }}
+  </div>
+  {% endfor %}
+</div>
 {% endblock %}
