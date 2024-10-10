@@ -39,6 +39,9 @@ class Phase(db.Model):
 
     def __repr__(self):
         return f'<Phase {self.phasename}>'
+    
+    def villain_count(self):
+        return len(self.villains)
 
 class Villain(db.Model):
     """Villains"""

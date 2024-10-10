@@ -1,18 +1,19 @@
 {% extends "base.html" %}
 
-{% macro phase_stats(phase) %}
-<div>
+{% macro phase_stats(phase, phases) %}
+<div class="container mt-3">
   <h2>{{ phase.phasename }}</h2>
   {% if phase.villains %}
-    {% if phase.heroes %}
-    <table>
-      <tr>
-        <td></td><td></td>
-        {% for v in phase.villains %}
-        <td>{{ v.name }}</td>
-        {% endfor %}
-      </tr>
-      {% for h in phase.heroes %}
+  <table>
+    <tr>
+      <td></td><td></td>
+      {% for v in phase.villains %}
+      <td>{{ v.name }}</td>
+      {% endfor %}
+    </tr>
+    {% for hero_phase in phases %}
+    <tr><td class="h5" colspan="{{ phase.villain_count()+2 }}">{{ hero_phase.phasename }}</td></tr>
+      {% for h in hero_phase.heroes %}
       <tr>
         <td>{{ h.name }}</td>
         <td>{{ h.default_aspect.name }}</td>
@@ -21,10 +22,8 @@
         {% endfor %}
       </tr>
       {% endfor %}
-    </table>
-    {% else %}
-    <p>No heroes found for this phase!</p>
-    {% endif %}
+    {% endfor %}
+  </table>
   {% else %}
   <p>No villains found for this phase!</p>
   {% endif %}
@@ -56,12 +55,12 @@
 <div class="tab-content" id="stats-tabContent">
   {% for phase in phases[:1] %}
   <div class="tab-pane fade show active" id="nav-phase{{ phase.id }}" role="tabpanel" aria-labelledby="nav-phase{{ phase.id }}-tab" tabindex="0">
-    {{ phase_stats(phase) }}
+    {{ phase_stats(phase, phases) }}
   </div>
   {% endfor %}
   {% for phase in phases[1:] %}
   <div class="tab-pane fade" id="nav-phase{{ phase.id }}" role="tabpanel" aria-labelledby="nav-phase{{ phase.id }}-tab" tabindex="0">
-    {{ phase_stats(phase) }}
+    {{ phase_stats(phase, phases) }}
   </div>
   {% endfor %}
 </div>
