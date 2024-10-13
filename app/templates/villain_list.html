@@ -2,10 +2,23 @@
 
 {% block content %}
   <h1>Villains</h1>
-  <ul>
-  {% for v in villains %}
-    <li><a href={{ url_for('single_villain', villain_id=v.id) }}>{{ v.name }} ({{ v.phase.phasename }})</a></li>
-  {% endfor %}
-  </ul>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Villain</th>
+        <th>Phase</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for v in villains %}
+      <tr>
+        <td><a href={{ url_for('single_villain', villain_id=v.id) }}>{{ v.name }}</a></td>
+        <td>({{ v.phase.phasename }})</td>
+        <td><a href={{ url_for('villain_update', villain_id=v.id) }}>Edit</a></td>
+        <td><a href={{ url_for('villain_delete', villain_id=v.id) }}>Delete</a></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
   <a href={{ url_for('villain_create') }}><button class="btn btn-primary mb-3" id="add" name="add" type="add" value="Add">Add</button></a>
 {% endblock %}
