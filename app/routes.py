@@ -2,8 +2,8 @@ from flask import render_template, flash, redirect, url_for, request
 from flask_login import current_user, login_user, logout_user, login_required
 import sqlalchemy as sa
 from app import app, db
-from app.forms import LoginForm, VillainForm, VillainDeleteForm, HeroForm
-from app.models import Phase, Aspect, User, Result, Villain
+from app.forms import LoginForm, VillainForm, VillainDeleteForm, HeroForm, HeroDeleteForm
+from app.models import Phase, Aspect, User, Result, Villain, Hero
 from urllib.parse import urlsplit
 
 
@@ -99,9 +99,7 @@ def villain_update(villain_id):
 def villain_delete(villain_id):
     v = Villain.query.filter_by(id=villain_id).first()
     if v:
-        pass
         form = VillainDeleteForm()
-        # form.phase.choices = [(p.id, p.phasename) for p in Phase.query.order_by('id')]
         if form.validate_on_submit():
             db.session.delete(v)
             db.session.commit()
@@ -114,9 +112,9 @@ def villain_delete(villain_id):
     flash(f'Villain with id {villain_id} does not exist!')
     return redirect(url_for('index'))
 
-@app.route('/hero', methods=['GET', 'POST'])
+@app.route('/hero/create', methods=['GET', 'POST'])
 @login_required
-def hero():
+def hero_create():
     form = HeroForm()
     #TODO: Need an actual error when no Phases are defined.
     # Currently generates an unsubmittable form.
@@ -124,10 +122,70 @@ def hero():
     #TODO: Ditto for Aspects.
     form.aspect.choices = [(a.id, a.name) for a in Aspect.query.order_by('id')]
     if form.validate_on_submit():
+        h = Hero(name=form.name.data, phase_id=form.phase.data, aspect_id=form.aspect.data)
+        db.session.add(h)
+        db.session.commit()
         flash('New hero {}, from phase {} with default aspect {}'.format(
             form.name.data, form.phase.data, form.aspect.data))
-        return redirect(url_for('index'))
+        return redirect(url_for('hero'))
     return render_template('hero.html', form=form)
+
+@app.route('/hero')
+def hero():
+    heroes=Hero.query.order_by('phase_id').all()
+    return render_template('hero_list.html',heroes=heroes)
+
+@app.route('/hero/<int:hero_id>')
+def single_hero(hero_id):
+    h = Hero.query.filter_by(id=hero_id).first()
+    if h:
+        return render_template('single_hero.html', hero=h)
+    flash(f'Hero with id {hero_id} does not exist!')
+    return redirect(url_for('index'))
+
+@app.route('/hero/<int:hero_id>/update', methods=['GET', 'POST'])
+@login_required
+def hero_update(hero_id):
+    h = Hero.query.filter_by(id=hero_id).first()
+    if h:
+        form = HeroForm()
+        #TODO: Need an actual error when no Phases are defined.
+        # Currently generates an unsubmittable form.
+        form.phase.choices = [(p.id, p.phasename) for p in Phase.query.order_by('id')]
+        #TODO: Ditto for Aspects.
+        form.aspect.choices = [(a.id, a.name) for a in Aspect.query.order_by('id')]
+        if form.validate_on_submit():
+            h.name = form.name.data
+            h.phase_id = form.phase.data
+            h.aspect_id = form.aspect.data
+            db.session.commit()
+            flash(f'Updated details for Hero {h.name}')
+            return redirect(url_for('hero'))
+        elif request.method == 'GET':
+            form.name.data = h.name
+            form.phase.data = h.phase_id
+            form.aspect.data = h.aspect_id
+        return render_template('hero.html', title='Hero', form=form)
+    flash(f'Hero with id {hero_id} does not exist!')
+    return redirect(url_for('index'))
+
+@app.route('/hero/<int:hero_id>/delete', methods=['GET', 'POST'])
+@login_required
+def hero_delete(hero_id):
+    h = Hero.query.filter_by(id=hero_id).first()
+    if h:
+        form = HeroDeleteForm()
+        if form.validate_on_submit():
+            db.session.delete(h)
+            db.session.commit()
+            flash(f'Deleted Hero {h.name}')
+            return redirect(url_for('hero'))
+        elif request.method == 'GET':
+            pass
+            # No fields to populate in the form
+        return render_template('hero_delete.html', title='Hero', form=form, hero=h)
+    flash(f'Hero with id {hero_id} does not exist!')
+    return redirect(url_for('index'))
 
 @app.route('/forcederror', methods=['GET'])
 def forcederror():

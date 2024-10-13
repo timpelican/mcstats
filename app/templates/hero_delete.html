@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Hero</h1>
+    <form action="" method="post" novalidate>
+        {{ form.hidden_tag() }}
+        <p>
+            Delete the Hero {{ hero.name }}?
+        </p>
+        <p>
+        <p>{{ form.submit() }}</p>
+    </form>
+{% endblock %}

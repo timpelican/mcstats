@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>Hero</h1>
+  <ul>
+    <li>Name: {{ hero.name }}</li>
+    <li>Phase: {{ hero.phase.phasename }}</li>
+    <li>Default Aspect: {{ hero.default_aspect.name }}</li>
+  </ul>
+  <a href={{ url_for('hero_update', hero_id=hero.id) }}><button class="btn btn-primary mb-3" id="edit" name="edit" type="edit" value="Edit">Edit</button></a>
+{% endblock %}

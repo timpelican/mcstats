@@ -7,7 +7,7 @@ import pytest
 import sqlalchemy as sa
 from flask_login import login_user, logout_user
 from app import app, db
-from app.models import User, Phase, Villain
+from app.models import User, Phase, Villain, Aspect, Hero
 
 class AuthActions():
     """
@@ -84,7 +84,7 @@ def test_auth(test_client):
 @pytest.fixture
 def test_phase(test_app):
     """
-    Dummy Phase to allow for Villains
+    Dummy Phase to allow for Villains, Heroes
     """
     with test_app.app_context():
         p = Phase(id=1, phasename='Test Phase 1')
@@ -99,4 +99,24 @@ def test_villain(test_app, test_phase):
     with test_app.app_context():
         v = Villain(id=1, phase_id=1, name='Big Bad Bob')
         db.session.add(v)
+        db.session.commit()
+
+@pytest.fixture
+def test_aspect(test_app):
+    """
+    Dummy Aspect to allow for Heroes
+    """
+    with test_app.app_context():
+        a = Aspect(id=1, name='Testing')
+        db.session.add(a)
+        db.session.commit()
+
+@pytest.fixture
+def test_hero(test_app):
+    """
+    Dummy Hero
+    """
+    with test_app.app_context():
+        h = Hero(id=1, aspect_id=1, phase_id=1, name='Safety Queen')
+        db.session.add(h)
         db.session.commit()

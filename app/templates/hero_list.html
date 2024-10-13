@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>Heroes</h1>
+  <ul>
+  {% for h in heroes %}
+    <li><a href={{ url_for('single_hero', hero_id=h.id) }}>{{ h.name }} ({{ h.phase.phasename }})
+      ({{ h.default_aspect.name }})</a></li>
+  {% endfor %}
+  </ul>
+  <a href={{ url_for('hero_create') }}><button class="btn btn-primary mb-3" id="add" name="add" type="add" value="Add">Add</button></a>
+{% endblock %}

@@ -21,3 +21,6 @@ class HeroForm(FlaskForm):
     phase = RadioField('Phase', validators=[DataRequired()], coerce=int)
     aspect = SelectField('Default Aspect', validators=[DataRequired()], coerce=int)
     submit = SubmitField('Submit')
+
+class HeroDeleteForm(FlaskForm):
+    submit = SubmitField('Confirm')
