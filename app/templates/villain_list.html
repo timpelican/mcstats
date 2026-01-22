@@ -13,7 +13,7 @@
       {% for v in villains %}
       <tr>
         <td><a href={{ url_for('single_villain', villain_id=v.id) }}>{{ v.name }}</a></td>
-        <td>({{ v.phase.phasename }})</td>
+        <td>{{ v.phase.phasename }}</td>
         <td><a href={{ url_for('villain_update', villain_id=v.id) }}>Edit</a></td>
         <td><a href={{ url_for('villain_delete', villain_id=v.id) }}>Delete</a></td>
       </tr>
