@@ -113,3 +113,18 @@ def test_login_form_fail(test_client, test_auth):
         assert current_user.is_authenticated is False
         assert response.status_code == 302
         assert response.headers['Location'] == url_for('login')
+
+def test_logout(test_client, test_auth):
+    """
+    GIVEN an authenticated user session
+    WHEN the client logs out
+    THEN the session is no longer logged in, and is redirected to the index
+    """
+    with test_client.application.test_request_context():
+        test_auth.create()
+        test_auth.login()
+        assert current_user.is_authenticated is True
+        response = test_client.get('/logout')
+        assert response.status_code == 302
+        assert current_user.is_authenticated is False
+        assert response.headers['Location'] == url_for('index')
