@@ -27,7 +27,7 @@ class User(UserMixin, db.Model):
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
-
+    
 class Phase(db.Model):
     """Phases in which the game was released"""
     id: so.Mapped[int] = so.mapped_column(primary_key=True)
@@ -62,9 +62,24 @@ class Aspect(db.Model):
     name: so.Mapped[str] = so.mapped_column(sa.String(64), index=True,
                                             unique=True)
     heroes: so.Mapped[list['Hero']] = so.relationship(back_populates='default_aspect')
+    fg_colour: so.Mapped[str] = so.mapped_column(sa.String(7), default='#000000')
+    bg_colour: so.Mapped[str] = so.mapped_column(sa.String(7), default='#ffffff')
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        # Set defaults if needed.  Better way to do this?
+        # TODO: validate that we've actually been passed '#rrggbb' values
+        self.fg_colour = kwargs.get('fg_colour', '#000000')
+        self.bg_colour = kwargs.get('bg_colour', '#ffffff')
 
     def __repr__(self):
         return f'<Aspect {self.name}>'
+    
+    def as_cell(self):
+        return f'<td style="color:{self.fg_colour}; background-color:{self.bg_colour};">{self.name}</td>'
+    
+    def as_span(self):
+        return f'<span style="color:{self.fg_colour}; background-color:{self.bg_colour};">{self.name}</span>'
 
 class Hero(db.Model):
     """Heroes"""
