@@ -16,7 +16,7 @@
       {% for h in hero_phase.heroes %}
       <tr>
         <td>{{ h.name }}</td>
-        <td>{{ h.default_aspect.name }}</td>
+        {{ h.default_aspect.as_cell()|safe }}
         {% for v2 in phase.villains %}
             {{ h.result_as_cell(v2)|safe }}
         {% endfor %}
