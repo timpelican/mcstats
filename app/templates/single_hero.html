@@ -5,7 +5,7 @@
   <ul>
     <li>Name: {{ hero.name }}</li>
     <li>Phase: {{ hero.phase.phasename }}</li>
-    <li>Default Aspect: {{ hero.default_aspect.name }}</li>
+    <li>Default Aspect: {{ hero.default_aspect.as_span()|safe }}</li>
   </ul>
   <a href={{ url_for('hero_update', hero_id=hero.id) }}><button class="btn btn-primary mb-3" id="edit" name="edit" type="edit" value="Edit">Edit</button></a>
 {% endblock %}

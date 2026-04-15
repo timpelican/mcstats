@@ -13,7 +13,7 @@
         <p>
             <em>Heroes: </em>
             {% for h in phase.heroes %}
-                {{ h.name }}({{ h.default_aspect.name }})
+                {{ h.name }}({{ h.default_aspect.as_span()|safe }})
             {% endfor %}
         </p>
     </div>

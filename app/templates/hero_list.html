@@ -15,7 +15,7 @@
       <tr>
         <td><a href={{ url_for('single_hero', hero_id=h.id) }}>{{ h.name }}</a></td>
         <td>{{ h.phase.phasename }}</td>
-        <td>{{ h.default_aspect.name }}</td>
+        {{ h.default_aspect.as_cell()|safe }}
         <td><a href={{ url_for('hero_update', hero_id=h.id) }}>Edit</a></td>
         <td><a href={{ url_for('hero_delete', hero_id=h.id) }}>Delete</a></td>
       </tr>
